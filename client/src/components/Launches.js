@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 import LaunchItem from './LaunchItem';
 import MissionKey from './MissionKey';
+import Spinner from './spinner/Spinner';
 
 
 const LAUNCHES_QUERY = gql`
@@ -18,24 +19,44 @@ const LAUNCHES_QUERY = gql`
 
 
 class Launches extends Component {
+    state = {
+        search: ''
+    }
+
+    onchange = e =>{
+        this.setState({ search : e.target.value });
+    }
+     
   render() {
     return (
-      <Fragment>
-        <h1 className="display-4 my-3">Launches</h1>
+      <div className="mt-5">
+        <input 
+        onChange={this.onchange}
+        type="text" 
+        placeholder="Search Launch..." 
+        className="form-control"/>
         <MissionKey />
         <Query query={LAUNCHES_QUERY} >
+            
             {({ loading, error, data }) => {
-                if(loading) return <h4>Loading...</h4>
+               
+                if(loading) return <Spinner />
                 if(error) console.log(error);
+                const {search} = this.state;
+                const filteredlaunches = data.launches.filter( launch =>{
+                  return launch.mission_name.toLowerCase().indexOf( search.toLowerCase() ) !== -1
+              })
                 
-                return <Fragment>
-                    {data.launches.reverse().map(launch => (
+                return (
+                <Fragment>
+                    {filteredlaunches.reverse().map(launch => (
                         <LaunchItem key={launch.flight_number} launch={launch}/>
                     ))}
-                </Fragment>;
+                </Fragment>
+                );
             }}
         </Query>
-      </Fragment>
+      </div>
     )
   }
 }

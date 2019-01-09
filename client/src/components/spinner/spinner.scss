@@ -1,0 +1,33 @@
+.spinner {
+    $color: rgba(255,255,255,0.4);
+    $size: 5rem;
+    margin-top: 250px;
+    display: flex;
+    width: 100%;
+    min-height: 100%;
+    align-items: center;
+    justify-content: center;
+    .spinn {
+        width: $size;
+        height: $size;
+
+        &:after {
+            content: ' ';
+            display: block;
+            width: $size;
+            height: $size;
+            border-radius: 50%;
+            border: 7px solid $color;
+            border-color: $color transparent $color transparent;
+            animation: spin 1.5s linear infinite;
+        }
+    }
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
